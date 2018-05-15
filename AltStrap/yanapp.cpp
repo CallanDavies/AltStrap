@@ -31,6 +31,8 @@ void yan::application::run(const char * title, int width, int height)
 
 			//should the game exit?
 			m_gameOver = m_gameOver || glfwWindowShouldClose(m_window) == GLFW_TRUE;
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
         }
 
@@ -88,7 +90,7 @@ bool yan::application::createWindow(const char * title, int width, int height)
 	glm::mat4 projection = glm::perspective(glm::pi<float>() * 0.25f,
 		16 / 9.f, 0.1f, 1000.f);
 
-
+	return true;
 }
 
 void yan::application::destroyWindow()

@@ -1,6 +1,6 @@
 #include "yanapp3D.h"
 
-application3D::application3D()
+application3D::application3D() : application()
 {
 
 }
@@ -13,7 +13,7 @@ application3D::~application3D()
 bool application3D::startup()
 {
 	// AIE Gizmos - TODO: Better Numbers
-	aie::Gizmos::create(10000, 10000, 10000, 10000);
+	//aie::Gizmos::create(10000, 10000, 10000, 10000);
 
 	// Camera: position and direction
 	m_viewMatrix = glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0), glm::vec3(0, 1, 0));
@@ -32,7 +32,7 @@ void application3D::shutdown()
 
 void application3D::update(float deltaTime)
 {
-	
+	aie::Gizmos::clear();
 	// Adds the axis widget to the scene
 	aie::Gizmos::addTransform(glm::mat4(1));
 	// Vec4 value for colours.
@@ -68,14 +68,18 @@ void application3D::update(float deltaTime)
 	aie::Gizmos::addSphere(glm::vec3(0), 0.5f, 4, 4, black, &globalMatrix);
 
 
-	glfwSwapBuffers(m_window);
-	glfwPollEvents();
 }
 
 void application3D::draw()
 {
-	aie::Gizmos::clear();
-
+	
 	// Move all objects into somewhere the camera can see it.
 	aie::Gizmos::draw(m_projectionMatrix * m_viewMatrix);
+
+	glfwSwapBuffers(m_window);
+
+	// wipe the screen to the background colour
+	//
+
+	glfwPollEvents();
 }
