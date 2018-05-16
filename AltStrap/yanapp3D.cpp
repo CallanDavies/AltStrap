@@ -14,7 +14,15 @@ bool application3D::startup()
 {
 	// AIE Gizmos - TODO: Better Numbers
 	//aie::Gizmos::create(10000, 10000, 10000, 10000);
+	// Parent Object
+	parentMatrix = glm::mat4(1);
 
+	// Child Object
+	localMatrix = glm::mat4(1);
+	globalMatrix = glm::mat4(1);
+
+	m_viewMatrix = glm::mat4(1);
+	m_projectionMatrix = glm::mat4(1);
 	// Camera: position and direction
 	m_viewMatrix = glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0), glm::vec3(0, 1, 0));
 	// FOV setter
@@ -54,7 +62,7 @@ void application3D::update(float deltaTime)
 	// Apply rotation to Parent
 	// Parent Orbits centre
 	parentMatrix = rot * parentMatrix;
-	aie::Gizmos::addSphere(glm::vec3(0), 1, 4, 4, white, &parentMatrix);
+	aie::Gizmos::addSphere(glm::vec3(0), 1, 2, 2, white, &parentMatrix);
 	// Parent Spins
 	rot = glm::rotate(deltaTime * 3, glm::vec3(0, 1, 0));
 	parentMatrix = parentMatrix * rot;
@@ -65,21 +73,14 @@ void application3D::update(float deltaTime)
 
 	//... once child Syncs. with parent
 	globalMatrix = parentMatrix * localMatrix;
-	aie::Gizmos::addSphere(glm::vec3(0), 0.5f, 4, 4, black, &globalMatrix);
+	aie::Gizmos::addSphere(glm::vec3(0), 0.5f, 20, 20, black, &globalMatrix);
 
 
 }
 
 void application3D::draw()
 {
-	
 	// Move all objects into somewhere the camera can see it.
 	aie::Gizmos::draw(m_projectionMatrix * m_viewMatrix);
 
-	glfwSwapBuffers(m_window);
-
-	// wipe the screen to the background colour
-	//
-
-	glfwPollEvents();
 }

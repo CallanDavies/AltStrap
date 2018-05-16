@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="..\dependencies\glCore\gl_core_4_5.c" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FlyCameracpp.cpp" />
     <ClCompile Include="Gizmos.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="yanapp.cpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="..\dependencies\glCore\gl_core_4_5.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="Gizmos.h" />
     <ClInclude Include="yanapp.h" />
     <ClInclude Include="yanapp3D.h" />

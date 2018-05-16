@@ -25,14 +25,19 @@ void yan::application::run(const char * title, int width, int height)
 			auto duration = m_currentTime - m_previousTime;
 			double deltaTime = duration.count() * NANO_TO_SECONDS;
 
+			glfwPollEvents();
+
 			update(float(deltaTime));
 
 			draw();
+			
+			glfwSwapBuffers(m_window);
 
 			//should the game exit?
 			m_gameOver = m_gameOver || glfwWindowShouldClose(m_window) == GLFW_TRUE;
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		}
         }
 
