@@ -10,7 +10,7 @@ public:
 
 protected:
 	// WASD motion Speed
-	float m_fMoveSpeed;
+	float m_fMoveSpeed = 10;
 	// Mouse look Sensitivity
 	float m_fMouseSpeed;
 	// To rotate Around

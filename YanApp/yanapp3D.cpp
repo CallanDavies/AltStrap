@@ -26,8 +26,9 @@ bool application3D::startup()
 	m_pCamera->SetLookAt(glm::vec3(50), glm::vec3(0), glm::vec3(0, 1, 0));
 	m_pCamera->SetPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.f);
 	m_pCamera->SetPosition(glm::vec3(0, 10, 0));
-	m_pCamera->setSpeed(10.0f);
 
+	// Hide the Cursor on window
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	return true;
 }
 
