@@ -21,14 +21,12 @@ bool application3D::startup()
 	localMatrix = glm::mat4(1);
 	globalMatrix = glm::mat4(1);
 
-	m_viewMatrix = glm::mat4(1);
-	m_projectionMatrix = glm::mat4(1);
 	// Camera: position and direction
-	m_viewMatrix = glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0), glm::vec3(0, 1, 0));
-	// FOV setter
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
-		16 / 9.f, 0.1f, 1000.f);
-
+	m_pCamera = new FlyCamera();
+	m_pCamera->SetLookAt(glm::vec3(50), glm::vec3(0), glm::vec3(0, 1, 0));
+	m_pCamera->SetPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.f);
+	m_pCamera->SetPosition(glm::vec3(0, 10, 0));
+	m_pCamera->setSpeed(10.0f);
 
 	return true;
 }
@@ -36,6 +34,7 @@ bool application3D::startup()
 void application3D::shutdown()
 {
 	aie::Gizmos::destroy();
+	delete m_pCamera;
 }
 
 void application3D::update(float deltaTime)
@@ -75,12 +74,12 @@ void application3D::update(float deltaTime)
 	globalMatrix = parentMatrix * localMatrix;
 	aie::Gizmos::addSphere(glm::vec3(0), 0.5f, 20, 20, black, &globalMatrix);
 
-
+	m_pCamera->Update(deltaTime,m_window);
 }
 
 void application3D::draw()
 {
 	// Move all objects into somewhere the camera can see it.
-	aie::Gizmos::draw(m_projectionMatrix * m_viewMatrix);
+	aie::Gizmos::draw(m_pCamera->GetProjectionViewTransform());
 
 }

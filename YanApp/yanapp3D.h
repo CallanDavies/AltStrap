@@ -1,6 +1,7 @@
 #pragma once
 
 #include "yanapp.h"
+#include "FlyCamera.h"
 
 class application3D : public yan::application
 {
@@ -24,4 +25,7 @@ protected:
 
 	glm::mat4 m_viewMatrix;
 	glm::mat4 m_projectionMatrix;
+
+	// Camera
+	FlyCamera* m_pCamera;
 };

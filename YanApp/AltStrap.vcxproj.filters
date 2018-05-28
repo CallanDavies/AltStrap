@@ -33,7 +33,7 @@
     <ClCompile Include="yanapp3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FlyCameracpp.cpp">
+    <ClCompile Include="FlyCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

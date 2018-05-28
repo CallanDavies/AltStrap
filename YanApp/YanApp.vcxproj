@@ -23,6 +23,7 @@
     <ProjectGuid>{C82C91C5-CB98-45C1-A1EC-0BDB77561FFD}</ProjectGuid>
     <RootNamespace>AltStrap</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>YanApp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -131,7 +132,7 @@
   <ItemGroup>
     <ClCompile Include="..\dependencies\glCore\gl_core_4_5.c" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="FlyCameracpp.cpp" />
+    <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="Gizmos.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="yanapp.cpp" />

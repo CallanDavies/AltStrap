@@ -1,14 +1,19 @@
 #pragma once
-#include <glm.hpp>
-
+#include <glm\glm.hpp>
+#include <glm\ext.hpp>
 struct GLFWwindow;
 class Camera
 {
 public:
+	// Constucer
+	Camera();
+	// Deconstructor
+	~Camera();
+
 	// pure virtual update as each camera will have a unique update
 	virtual void Update(float deltaTime, GLFWwindow* a_GLWindow) = 0;
 	// Set a new perspective for the camera
-	void SetPerspective(const float &a_fFOV, const float &a_fAspect, const float &a_fNear, const float a_fsomething);
+	void SetPerspective(const float &a_fFOV, const float &a_fAspect, const float &a_fNear, const float a_fFar);
 	// Set look from and to points 
 	void SetLookAt(const glm::vec3 &a_v3From, const glm::vec3 &a_V3To, const glm::vec3 &a_V3Up);
 	// Move the camera to this position
