@@ -15,7 +15,7 @@ void yan::application::run(const char * title, int width, int height)
 		time m_currentTime = m_clock.now();
 		time m_previousTime = m_clock.now();
 		auto duration = m_currentTime - m_previousTime;
-		float deltaTime = duration.count() * NANO_TO_SECONDS;
+		double deltaTime = duration.count() * NANO_TO_SECONDS;
 
 		while (!m_gameOver && glfwGetKey(m_window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 		{

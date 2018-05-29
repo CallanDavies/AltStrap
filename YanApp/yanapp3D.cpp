@@ -12,8 +12,7 @@ application3D::~application3D()
 
 bool application3D::startup()
 {
-	// AIE Gizmos - TODO: Better Numbers
-	//aie::Gizmos::create(10000, 10000, 10000, 10000);
+	
 	// Parent Object
 	parentMatrix = glm::mat4(1);
 
@@ -27,8 +26,55 @@ bool application3D::startup()
 	m_pCamera->SetPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.f);
 	m_pCamera->SetPosition(glm::vec3(0, 10, 0));
 
+	m_shader.loadShader(aie::eShaderStage::VERTEX,
+		"../shaders/simple.vert");
+	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
+		"../shaders/simple.frag");
+
+	if (m_shader.link() == false)
+	{
+		printf("Shader Error: %s\n", m_shader.getLastError());
+		return false;
+	}
+
+	// make the quad 1 units wide
+	m_quadTransform =
+	{
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
+		0,0,0,1
+	};
+	// define 6 vertices for 2 triangles
+	Mesh::Vertex vertices[6];
+	vertices[0].position = { -0.5f, 0, 0.5f, 1 };
+	vertices[1].position = { 0.5f, 0, 0.5f, 1 };
+	vertices[2].position = { -0.5f, 0, -0.5f, 1 };
+	vertices[3].position = { -0.5f, 0, -0.5f, 1 };
+	vertices[4].position = { 0.5f, 0, 0.5f, 1 };
+	vertices[5].position = { 0.5f, 0, -0.5f, 1 };
+	m_quadMesh.initalise(6, vertices);
+
+	if (m_bunnyMesh.load("../stanford/lucy.obj") == false)
+	{
+		printf("Bunny Mesh Error!\n");
+		return false;
+	}
+
+	m_bunnyTransform =
+	{
+		0.5f,0,0,0,
+		0,0.5f,0,0,
+		0,0,0.5f,0,
+		0,0,0,1
+	};
+
 	// Hide the Cursor on window
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+	aie::Texture texture1;
+	texture1.load("mytexture.png");
+
 	return true;
 }
 
@@ -80,6 +126,18 @@ void application3D::update(float deltaTime)
 
 void application3D::draw()
 {
+	// bind shader
+	m_shader.bind();
+
+	// bind transform
+	auto pvm = m_pCamera->GetProjectionViewTransform() * m_bunnyTransform;
+	m_shader.bindUniform("ProjectionViewModel", pvm);
+
+	// draw quad
+	m_quadMesh.draw();
+
+	m_bunnyMesh.draw();
+
 	// Move all objects into somewhere the camera can see it.
 	aie::Gizmos::draw(m_pCamera->GetProjectionViewTransform());
 

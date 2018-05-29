@@ -2,6 +2,9 @@
 
 #include "yanapp.h"
 #include "FlyCamera.h"
+#include "Shader.h"
+#include "Mesh.h"
+#include "OBJMesh.h"
 
 class application3D : public yan::application
 {
@@ -23,9 +26,15 @@ protected:
 	glm::mat4 localMatrix;
 	glm::mat4 globalMatrix;
 
-	glm::mat4 m_viewMatrix;
-	glm::mat4 m_projectionMatrix;
-
 	// Camera
 	FlyCamera* m_pCamera;
+
+	//Shaders
+	aie::ShaderProgram m_shader;
+	Mesh m_quadMesh;
+	glm::mat4 m_quadTransform;
+
+	//Bunny values
+	aie::OBJMesh m_bunnyMesh;
+	glm::mat4 m_bunnyTransform;
 };

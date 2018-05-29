@@ -135,6 +135,10 @@
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="Gizmos.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="OBJMesh.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="yanapp.cpp" />
     <ClCompile Include="yanapp3D.cpp" />
   </ItemGroup>
@@ -143,6 +147,12 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="Gizmos.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="OBJMesh.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="tiny_obj_loader.h" />
     <ClInclude Include="yanapp.h" />
     <ClInclude Include="yanapp3D.h" />
   </ItemGroup>
