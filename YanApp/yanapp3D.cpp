@@ -31,9 +31,20 @@ bool application3D::startup()
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
 		"../shaders/simple.frag");
 
+	m_texturedshader.loadShader(aie::eShaderStage::VERTEX,
+		"../shaders/textured.vert");
+	m_texturedshader.loadShader(aie::eShaderStage::FRAGMENT,
+		"../shaders/textured.frag");
+
 	if (m_shader.link() == false)
 	{
 		printf("Shader Error: %s\n", m_shader.getLastError());
+		return false;
+	}
+
+	if (m_gridTexture.load("../textures/numbered_grid.tga") == false)
+	{
+		printf("Failed to load Texture!\n");
 		return false;
 	}
 
@@ -53,7 +64,18 @@ bool application3D::startup()
 	vertices[3].position = { -0.5f, 0, -0.5f, 1 };
 	vertices[4].position = { 0.5f, 0, 0.5f, 1 };
 	vertices[5].position = { 0.5f, 0, -0.5f, 1 };
+
+	vertices[0].texCoord = { 0,1 };
+	vertices[1].texCoord = { 1,1 };
+	vertices[2].texCoord = { 0,0 };
+
+	vertices[3].texCoord = { 0,0 };
+	vertices[4].texCoord = { 1,1 };
+	vertices[5].texCoord = { 1,0 };
+
 	m_quadMesh.initalise(6, vertices);
+
+	
 
 	if (m_bunnyMesh.load("../stanford/lucy.obj") == false)
 	{
@@ -129,13 +151,28 @@ void application3D::draw()
 	// bind shader
 	m_shader.bind();
 
+	// bind textured shader
+	m_texturedshader.bind();
+
 	// bind transform
 	auto pvm = m_pCamera->GetProjectionViewTransform() * m_bunnyTransform;
-	m_shader.bindUniform("ProjectionViewModel", pvm);
+	m_shader.bindUniform("ProjectionViewModel", pvm);	
+
+	// bind transform of textured shader
+	pvm = m_pCamera->GetProjectionViewTransform() * m_quadTransform;
+	m_texturedshader.bindUniform("ProjectionViewModel", pvm);
+
+	// bind texture location
+	m_texturedshader.bindUniform("diffuseTexture", 0);
+
+	// bind texture to specified location
+	m_gridTexture.bind(0);
 
 	// draw quad
 	m_quadMesh.draw();
 
+
+	// draw object
 	m_bunnyMesh.draw();
 
 	// Move all objects into somewhere the camera can see it.

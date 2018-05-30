@@ -26,11 +26,17 @@ protected:
 	glm::mat4 localMatrix;
 	glm::mat4 globalMatrix;
 
+	// Texture for the grid
+	aie::Texture m_gridTexture;
+
 	// Camera
 	FlyCamera* m_pCamera;
 
 	//Shaders
 	aie::ShaderProgram m_shader;
+	// Textured Shader
+	aie::ShaderProgram m_texturedshader;
+
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
 

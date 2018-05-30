@@ -75,6 +75,10 @@ void Mesh::initalise(unsigned int vertexCount, const Vertex * vertices, unsigned
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 
+	// enable third element as texture
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)32);
+
 	// bind indices if there are any
 	if (indexCount != 0)
 	{
