@@ -36,6 +36,8 @@ protected:
 	aie::ShaderProgram m_shader;
 	// Textured Shader
 	aie::ShaderProgram m_texturedshader;
+	// Phong Shader
+	aie::ShaderProgram m_phongShader;
 
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
@@ -43,4 +45,13 @@ protected:
 	//Bunny values
 	aie::OBJMesh m_bunnyMesh;
 	glm::mat4 m_bunnyTransform;
+
+	struct Light
+	{
+		glm::vec3 direction;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+	};
+	Light m_light;
+	glm::vec3 m_ambientLight;
 };

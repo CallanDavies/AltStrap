@@ -12,7 +12,10 @@ application3D::~application3D()
 
 bool application3D::startup()
 {
-	
+	m_light.diffuse = { 1, 1, 0 };
+	m_light.specular = { 1, 1 , 0 };
+	m_ambientLight = { 0.25f, 0.25f, 0.25f };
+
 	// Parent Object
 	parentMatrix = glm::mat4(1);
 
@@ -26,7 +29,7 @@ bool application3D::startup()
 	m_pCamera->SetPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.f);
 	m_pCamera->SetPosition(glm::vec3(0, 10, 0));
 
-	m_shader.loadShader(aie::eShaderStage::VERTEX,
+	/*m_shader.loadShader(aie::eShaderStage::VERTEX,
 		"../shaders/simple.vert");
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
 		"../shaders/simple.frag");
@@ -34,17 +37,34 @@ bool application3D::startup()
 	m_texturedshader.loadShader(aie::eShaderStage::VERTEX,
 		"../shaders/textured.vert");
 	m_texturedshader.loadShader(aie::eShaderStage::FRAGMENT,
-		"../shaders/textured.frag");
+		"../shaders/textured.frag");*/
 
-	if (m_shader.link() == false)
+	/*if (m_shader.link() == false)
 	{
 		printf("Shader Error: %s\n", m_shader.getLastError());
+		return false;
+	}
+
+	if (m_texturedshader.link() == false)
+	{
+		printf("Shader Error: %s\n", m_texturedshader.getLastError());
 		return false;
 	}
 
 	if (m_gridTexture.load("../textures/numbered_grid.tga") == false)
 	{
 		printf("Failed to load Texture!\n");
+		return false;
+	}*/
+
+	m_phongShader.loadShader(aie::eShaderStage::VERTEX,
+	"../shaders/phong.vert");
+	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT,
+	"../shaders/phong.frag");
+
+	if (m_phongShader.link() == false)
+	{
+		printf("Shader Error: %s\n", m_phongShader.getLastError());
 		return false;
 	}
 
@@ -75,9 +95,7 @@ bool application3D::startup()
 
 	m_quadMesh.initalise(6, vertices);
 
-	
-
-	if (m_bunnyMesh.load("../stanford/lucy.obj") == false)
+	if (m_bunnyMesh.load("../models/soulspear.obj") == false)
 	{
 		printf("Bunny Mesh Error!\n");
 		return false;
@@ -108,74 +126,37 @@ void application3D::shutdown()
 
 void application3D::update(float deltaTime)
 {
-	aie::Gizmos::clear();
-	// Adds the axis widget to the scene
-	aie::Gizmos::addTransform(glm::mat4(1));
-	// Vec4 value for colours.
-	glm::vec4 white(1);
-	glm::vec4 black(0, 0, 0, 1);
-	// Building a 3D Grid
-	for (int i = 0; i < 21; ++i) {
-		aie::Gizmos::addLine(glm::vec3(-10 + i, 0, 10),
-			glm::vec3(-10 + i, 0, -10),
-			i == 10 ? white : black);
-		aie::Gizmos::addLine(glm::vec3(10, 0, -10 + i),
-			glm::vec3(-10, 0, -10 + i),
-			i == 10 ? white : black);
-	}
-
-	// create rotation matrix
-	glm::mat4 rot(1);
-	rot = glm::rotate(deltaTime, glm::vec3(0, 1, 0));
-	// Apply rotation to Parent
-	// Parent Orbits centre
-	parentMatrix = rot * parentMatrix;
-	aie::Gizmos::addSphere(glm::vec3(0), 1, 2, 2, white, &parentMatrix);
-	// Parent Spins
-	rot = glm::rotate(deltaTime * 3, glm::vec3(0, 1, 0));
-	parentMatrix = parentMatrix * rot;
-
-	//Rotate Child around Parent...
-	rot = glm::rotate(deltaTime * -2, glm::vec3(0, 1, 0));
-	localMatrix = rot * localMatrix;
-
-	//... once child Syncs. with parent
-	globalMatrix = parentMatrix * localMatrix;
-	aie::Gizmos::addSphere(glm::vec3(0), 0.5f, 20, 20, black, &globalMatrix);
+	float time = glfwGetTime();
+	
+	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
 
 	m_pCamera->Update(deltaTime,m_window);
 }
 
 void application3D::draw()
 {
-	// bind shader
-	m_shader.bind();
+	// bind phong shader
+	m_phongShader.bind();
 
-	// bind textured shader
-	m_texturedshader.bind();
+	// bind light
+	m_phongShader.bindUniform("Ia", m_ambientLight);
+	m_phongShader.bindUniform("Id", m_light.diffuse);
+	m_phongShader.bindUniform("Is", m_light.specular);
+	m_phongShader.bindUniform("LightDirection", m_light.direction);
 
-	// bind transform
-	auto pvm = m_pCamera->GetProjectionViewTransform() * m_bunnyTransform;
-	m_shader.bindUniform("ProjectionViewModel", pvm);	
+	// bind transform of Phong shader
+	auto pvm = m_pCamera->GetProjectionViewTransform() * m_quadTransform;
+	m_phongShader.bindUniform("ProjectionViewModel", pvm);
 
-	// bind transform of textured shader
-	pvm = m_pCamera->GetProjectionViewTransform() * m_quadTransform;
-	m_texturedshader.bindUniform("ProjectionViewModel", pvm);
+	// bind transforms for lighting
+	m_phongShader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_quadTransform)));
 
-	// bind texture location
-	m_texturedshader.bindUniform("diffuseTexture", 0);
-
-	// bind texture to specified location
-	m_gridTexture.bind(0);
+	// bing transform for camera position
+	m_phongShader.bindUniform("cameraPosition", m_pCamera->GetPosition());
 
 	// draw quad
-	m_quadMesh.draw();
-
+	//m_quadMesh.draw();
 
 	// draw object
 	m_bunnyMesh.draw();
-
-	// Move all objects into somewhere the camera can see it.
-	aie::Gizmos::draw(m_pCamera->GetProjectionViewTransform());
-
 }

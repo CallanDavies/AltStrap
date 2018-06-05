@@ -39,6 +39,10 @@ public:
 		return m_projectionViewTransform;
 	}
 	
+	glm::vec3 GetPosition() const
+	{
+		return m_worldTransform[3];
+	}
 protected:
 	// Camera Position and rotation
 	glm::mat4  m_worldTransform;

@@ -12,3 +12,4 @@ void main()
 {
 vTexCoord = TexCoord;
 gl_Position = ProjectionViewModel * Position;
+}
