@@ -32,19 +32,19 @@ protected:
 	// Camera
 	FlyCamera* m_pCamera;
 
-	//Shaders
-	aie::ShaderProgram m_shader;
-	// Textured Shader
-	aie::ShaderProgram m_texturedshader;
 	// Phong Shader
-	aie::ShaderProgram m_phongShader;
+	aie::ShaderProgram m_texturedShader;
 
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
 
 	//Bunny values
-	aie::OBJMesh m_bunnyMesh;
-	glm::mat4 m_bunnyTransform;
+	aie::OBJMesh m_SSpearMesh;
+	glm::mat4 m_SSpearTransform;
+
+	aie::Texture m_DiffuseTexture;
+	aie::Texture m_NormalTexture;
+	aie::Texture m_SpecularTexture;
 
 	struct Light
 	{

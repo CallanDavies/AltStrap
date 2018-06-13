@@ -72,9 +72,6 @@ void Mesh::initalise(unsigned int vertexCount, const Vertex * vertices, unsigned
 	//bind vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	
-
-
 	// fill vertex buffer
 	glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(Vertex),
 		vertices, GL_STATIC_DRAW);

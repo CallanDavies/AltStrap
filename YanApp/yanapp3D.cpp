@@ -29,42 +29,14 @@ bool application3D::startup()
 	m_pCamera->SetPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.f);
 	m_pCamera->SetPosition(glm::vec3(0, 10, 0));
 
-	/*m_shader.loadShader(aie::eShaderStage::VERTEX,
-		"../shaders/simple.vert");
-	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
-		"../shaders/simple.frag");
+	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
+	"../shaders/normalmap.vert");
+	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
+	"../shaders/normalmap.frag");
 
-	m_texturedshader.loadShader(aie::eShaderStage::VERTEX,
-		"../shaders/textured.vert");
-	m_texturedshader.loadShader(aie::eShaderStage::FRAGMENT,
-		"../shaders/textured.frag");*/
-
-	/*if (m_shader.link() == false)
+	if (m_texturedShader.link() == false)
 	{
-		printf("Shader Error: %s\n", m_shader.getLastError());
-		return false;
-	}
-
-	if (m_texturedshader.link() == false)
-	{
-		printf("Shader Error: %s\n", m_texturedshader.getLastError());
-		return false;
-	}
-
-	if (m_gridTexture.load("../textures/numbered_grid.tga") == false)
-	{
-		printf("Failed to load Texture!\n");
-		return false;
-	}*/
-
-	m_phongShader.loadShader(aie::eShaderStage::VERTEX,
-	"../shaders/phong.vert");
-	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT,
-	"../shaders/phong.frag");
-
-	if (m_phongShader.link() == false)
-	{
-		printf("Shader Error: %s\n", m_phongShader.getLastError());
+		printf("Shader Error: %s\n", m_texturedShader.getLastError());
 		return false;
 	}
 
@@ -76,32 +48,14 @@ bool application3D::startup()
 		0,0,1,0,
 		0,0,0,1
 	};
-	// define 6 vertices for 2 triangles
-	Mesh::Vertex vertices[6];
-	vertices[0].position = { -0.5f, 0, 0.5f, 1 };
-	vertices[1].position = { 0.5f, 0, 0.5f, 1 };
-	vertices[2].position = { -0.5f, 0, -0.5f, 1 };
-	vertices[3].position = { -0.5f, 0, -0.5f, 1 };
-	vertices[4].position = { 0.5f, 0, 0.5f, 1 };
-	vertices[5].position = { 0.5f, 0, -0.5f, 1 };
 
-	vertices[0].texCoord = { 0,1 };
-	vertices[1].texCoord = { 1,1 };
-	vertices[2].texCoord = { 0,0 };
-
-	vertices[3].texCoord = { 0,0 };
-	vertices[4].texCoord = { 1,1 };
-	vertices[5].texCoord = { 1,0 };
-
-	m_quadMesh.initalise(6, vertices);
-
-	if (m_bunnyMesh.load("../models/soulspear.obj") == false)
+	if (m_SSpearMesh.load("../models/soulspear.obj", true, true) == false)
 	{
-		printf("Bunny Mesh Error!\n");
+		printf("Soul Spear Mesh Error!\n");
 		return false;
 	}
 
-	m_bunnyTransform =
+	m_SSpearTransform =
 	{
 		0.5f,0,0,0,
 		0,0.5f,0,0,
@@ -111,9 +65,6 @@ bool application3D::startup()
 
 	// Hide the Cursor on window
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-	aie::Texture texture1;
-	texture1.load("mytexture.png");
 
 	return true;
 }
@@ -135,28 +86,28 @@ void application3D::update(float deltaTime)
 
 void application3D::draw()
 {
-	// bind phong shader
-	m_phongShader.bind();
-
-	// bind light
-	m_phongShader.bindUniform("Ia", m_ambientLight);
-	m_phongShader.bindUniform("Id", m_light.diffuse);
-	m_phongShader.bindUniform("Is", m_light.specular);
-	m_phongShader.bindUniform("LightDirection", m_light.direction);
-
-	// bind transform of Phong shader
-	auto pvm = m_pCamera->GetProjectionViewTransform() * m_quadTransform;
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	// bind transforms for lighting
-	m_phongShader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_quadTransform)));
+	// bind shader
+	m_texturedShader.bind();
 
 	// bing transform for camera position
-	m_phongShader.bindUniform("cameraPosition", m_pCamera->GetPosition());
+	m_texturedShader.bindUniform("cameraPosition", m_pCamera->GetPosition());
 
-	// draw quad
-	//m_quadMesh.draw();
+	// bind light
+	m_texturedShader.bindUniform("Ia", m_ambientLight);
+	m_texturedShader.bindUniform("Id", m_light.diffuse);
+	m_texturedShader.bindUniform("Is", m_light.specular);
+	m_texturedShader.bindUniform("LightDirection", m_light.direction);
+	m_texturedShader.bindUniform("diffuseTexture", 1);
+
+	// bind transform of shader
+	auto pvm = m_pCamera->GetProjectionViewTransform() * m_SSpearTransform;
+	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
+
+	// bind transforms for the normal
+	m_texturedShader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_SSpearTransform)));
+
+	
 
 	// draw object
-	m_bunnyMesh.draw();
+	m_SSpearMesh.draw();
 }
