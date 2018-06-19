@@ -38,13 +38,13 @@ protected:
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
 
-	//Bunny values
+	//Spear values
 	aie::OBJMesh m_SSpearMesh;
 	glm::mat4 m_SSpearTransform;
 
-	aie::Texture m_DiffuseTexture;
-	aie::Texture m_NormalTexture;
-	aie::Texture m_SpecularTexture;
+	// Rock values
+	aie::OBJMesh m_RockMesh;
+	glm::mat4 m_RockTransform;
 
 	struct Light
 	{
@@ -53,5 +53,6 @@ protected:
 		glm::vec3 specular;
 	};
 	Light m_light;
+	Light m_secondLight;
 	glm::vec3 m_ambientLight;
 };

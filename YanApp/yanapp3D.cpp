@@ -16,19 +16,15 @@ bool application3D::startup()
 	m_light.specular = { 1, 1 , 0 };
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
-	// Parent Object
-	parentMatrix = glm::mat4(1);
-
-	// Child Object
-	localMatrix = glm::mat4(1);
-	globalMatrix = glm::mat4(1);
+	m_secondLight.diffuse = { 1, 0, 0 };
+	m_secondLight.specular = { 1, 0 , 0 };
 
 	// Camera: position and direction
 	m_pCamera = new FlyCamera();
 	m_pCamera->SetLookAt(glm::vec3(50), glm::vec3(0), glm::vec3(0, 1, 0));
 	m_pCamera->SetPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.f);
-	m_pCamera->SetPosition(glm::vec3(0, 10, 0));
-
+	m_pCamera->SetPosition(glm::vec3(6.25, 6.25, 6.25));
+	
 	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
 	"../shaders/normalmap.vert");
 	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
@@ -55,12 +51,26 @@ bool application3D::startup()
 		return false;
 	}
 
+	if (m_RockMesh.load("../models/Rock.obj", true, true) == false)
+	{
+		printf("Rock Mesh Error!\n");
+		return false;
+	}
+
 	m_SSpearTransform =
 	{
-		0.5f,0,0,0,
-		0,0.5f,0,0,
-		0,0,0.5f,0,
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
 		0,0,0,1
+	};
+
+	m_RockTransform =
+	{
+		0.4f,0,0,0,
+		0,0.4f,0,0,
+		0,0,0.4f,0,
+		2,0,0,1
 	};
 
 	// Hide the Cursor on window
@@ -81,6 +91,8 @@ void application3D::update(float deltaTime)
 	
 	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
 
+	m_secondLight.direction = glm::normalize(glm::vec3(glm::cos(time * 0.5f), glm::sin(time * 0.5f), 0));
+
 	m_pCamera->Update(deltaTime,m_window);
 }
 
@@ -97,17 +109,22 @@ void application3D::draw()
 	m_texturedShader.bindUniform("Id", m_light.diffuse);
 	m_texturedShader.bindUniform("Is", m_light.specular);
 	m_texturedShader.bindUniform("LightDirection", m_light.direction);
-	m_texturedShader.bindUniform("diffuseTexture", 1);
+
+	m_texturedShader.bindUniform("Id2", m_secondLight.diffuse);
+	m_texturedShader.bindUniform("Is2", m_secondLight.specular);
+	m_texturedShader.bindUniform("LightDirection2", m_secondLight.direction);
 
 	// bind transform of shader
 	auto pvm = m_pCamera->GetProjectionViewTransform() * m_SSpearTransform;
 	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
-
 	// bind transforms for the normal
 	m_texturedShader.bindUniform("NormalMatrix", glm::inverseTranspose(glm::mat3(m_SSpearTransform)));
-
-	
-
-	// draw object
 	m_SSpearMesh.draw();
+
+	// bind transform of shader
+	pvm = m_pCamera->GetProjectionViewTransform() * m_RockTransform;
+	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
+	// bind transforms for the normal
+	m_texturedShader.bindUniform("NormalMatrix", m_RockTransform);
+	m_RockMesh.draw();
 }
