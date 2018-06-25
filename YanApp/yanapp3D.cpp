@@ -12,10 +12,13 @@ application3D::~application3D()
 
 bool application3D::startup()
 {
+	// Setup for first light
 	m_light.diffuse = { 1, 1, 0 };
 	m_light.specular = { 1, 1 , 0 };
+	// ambient Light setup
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
+	// Setup for second light
 	m_secondLight.diffuse = { 1, 0, 0 };
 	m_secondLight.specular = { 1, 0 , 0 };
 

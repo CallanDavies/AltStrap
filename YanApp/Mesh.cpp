@@ -54,8 +54,6 @@ void Mesh::initialiseQuad()
 
 	//quad has 2 triangles
 	triCount = 2;
-
-	// MORE TO GO HERE
 }
 
 void Mesh::initalise(unsigned int vertexCount, const Vertex * vertices, unsigned int indexCount /* = 0*/, unsigned int * indices /* = nullptr*/)
